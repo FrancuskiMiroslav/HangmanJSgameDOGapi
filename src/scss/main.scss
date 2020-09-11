@@ -94,6 +94,7 @@
 				padding: 10px;
 				margin: 5px;
 				transition: 0.2s all ease-in-out;
+				border: 1px solid rgba($color: $secondary_clr, $alpha: 1);
 
 				&:hover {
 					background-color: rgba($color: $secondary_clr, $alpha: 0.5);
@@ -103,6 +104,11 @@
 				&:active {
 					transform: scale(0.9);
 				}
+
+				&.clicked {
+					transform: scale(0.9) translateY(-5px);
+					background-color: rgba($color: $primary_clr, $alpha: 0.8);
+				}
 			}
 		}
 
@@ -111,7 +117,7 @@
 		}
 
 		.letter {
-			border-bottom: 3px solid #2980b9;
+			border-bottom: 3px solid rgba($color: $secondary_clr, $alpha: 0.8);
 			display: inline-flex;
 			font-size: 30px;
 			align-items: center;
@@ -119,6 +125,7 @@
 			margin: 0 3px;
 			height: 50px;
 			width: 20px;
+			background-color: rgba($color: $secondary_clr, $alpha: 0.2);
 		}
 	}
 
@@ -185,7 +192,7 @@
 	&__title-container {
 		background-color: rgba($color: #000000, $alpha: 0.2);
 		box-shadow: 3px 2px 30px 1px rgba(0, 0, 0, 0.75);
-		padding: 20px;
+		padding: 15px;
 	}
 
 	&__title,
@@ -244,6 +251,8 @@
 		margin-bottom: 20px;
 		transition: 1s all ease-in-out;
 		cursor: zoom-in;
+		height: 320px;
+		object-fit: contain;
 
 		&:hover {
 			transform: scale(1.1);

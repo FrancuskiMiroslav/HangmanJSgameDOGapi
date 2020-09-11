@@ -38,142 +38,136 @@ window.addEventListener('DOMContentLoaded', function () {
 	];
 
 	playBtn.addEventListener('click', (e) => {
-		async function getSingleDogBreed() {
-			playBtn.innerText = 'Play again';
+		getSingleDogBreed();
+	});
 
-			const breedListResponse = await fetch(
-				'https://dog.ceo/api/breeds/list/all'
-			);
-			const breedListData = await breedListResponse.json();
-			let breedsArray = Object.keys(breedListData.message);
+	// Restart game and play again
+	playAgainBtn.addEventListener('click', () => {
+		getSingleDogBreed();
 
-			const singleBreed =
-				breedsArray[Math.floor(Math.random() * breedsArray.length)];
+		popup.style.display = 'none';
+		let letters = document.querySelectorAll('.alphabet-button');
+		letters.forEach((letter) => {
+			letter.classList.remove('clicked');
+		});
+	});
 
-			const breedListImageResponse = await fetch(
-				`https://dog.ceo/api/breed/${singleBreed}/images/random`
-			);
-			const breedListImageData = await breedListImageResponse.json();
+	async function getSingleDogBreed() {
+		playBtn.innerText = 'Change word (display new Dog breed)';
 
-			dogImgContainer.innerHTML = `
+		const breedListResponse = await fetch(
+			'https://dog.ceo/api/breeds/list/all'
+		);
+		const breedListData = await breedListResponse.json();
+		let breedsArray = Object.keys(breedListData.message);
+
+		const singleBreed =
+			breedsArray[Math.floor(Math.random() * breedsArray.length)];
+
+		const breedListImageResponse = await fetch(
+			`https://dog.ceo/api/breed/${singleBreed}/images/random`
+		);
+		const breedListImageData = await breedListImageResponse.json();
+
+		dogImgContainer.innerHTML = `
 								<img
 									src="${breedListImageData.message}"
 									class="dog__image"
 									alt=""
 									id="dog-img"
 								/>
-								<button class="dog__btn" id="next-btn">Next pic</button>
+								<button class="dog__btn" id="next-btn">Next hint</button>
 							`;
 
-			await new Promise((resolve, reject) => setTimeout(resolve, 200));
+		const dogImg = document.getElementById('dog-img');
+		const dogImgHeight = getComputedStyle(dogImg);
+		const maxHeight = dogImgHeight.height;
 
-			const dogImg = document.getElementById('dog-img');
-			const dogImgHeight = getComputedStyle(dogImg);
-			const maxHeight = dogImgHeight.height;
+		const nextDogBtn = document.getElementById('next-btn');
+		nextDogBtn.addEventListener('click', (e) => {
+			fetch(`https://dog.ceo/api/breed/${singleBreed}/images/random`)
+				.then((res) => res.json())
+				.then((data) => dogImg.setAttribute('src', data.message));
+		});
 
-			function displayGame() {
-				gameContainer.style.maxHeight =
-					parseInt(maxHeight.replace(/px/, '')) + 3000 + 'px';
-			}
+		////// hangman part
+		let selectedWord = singleBreed;
+		const wordEl = document.getElementById('word');
+		const correctLetters = [];
+		const wrongLetters = [];
 
-			displayGame();
-
-			const nextDogBtn = document.getElementById('next-btn');
-			nextDogBtn.addEventListener('click', (e) => {
-				fetch(`https://dog.ceo/api/breed/${singleBreed}/images/random`)
-					.then((res) => res.json())
-					.then((data) => dogImg.setAttribute('src', data.message));
-			});
-
-			////// hangman part
-			let selectedWord = singleBreed;
-			const wordEl = document.getElementById('word');
-			const correctLetters = [];
-			const wrongLetters = [];
-
-			// Show hidden word
-			function displayWord() {
-				wordEl.innerHTML = `
+		// Show hidden word
+		function displayWord() {
+			wordEl.innerHTML = `
          		 ${selectedWord
 								.split('')
 								.map(
 									(letter) => `
-              <span class="letter">
+              <li class="letter">
               ${correctLetters.includes(letter) ? letter : ''}
-              </span>
+              </li>
               `
 								)
-								.join('')}
-          `;
-				console.log(selectedWord);
+								.join('')}`;
 
-				const innerWord = wordEl.innerText.replace(/\n/g, '');
+			const innerWord = wordEl.innerText.replace(/\n/g, '');
 
-				if (innerWord === selectedWord) {
-					finalMsg.innerText = 'Congrats! You won!';
-					popup.style.display = 'flex';
-				}
+			if (innerWord === selectedWord) {
+				finalMsg.innerText = 'Congrats! You won!';
+				popup.style.display = 'flex';
 			}
-
-			displayWord();
-
-			// Show notification
-			function showNotification() {
-				notification.classList.add('show');
-
-				setTimeout(() => {
-					notification.classList.remove('show');
-				}, 1500);
-			}
-
-			// check for letter that was clicked on
-			function clickedLetter() {
-				let letters = document.querySelectorAll('.alphabet-button');
-				console.log(selectedWord);
-
-				let clickedLetters = letters.forEach((letter) => {
-					letter.addEventListener('click', (e) => {
-						let clickedLetter = e.currentTarget.innerText;
-
-						if (selectedWord.includes(clickedLetter)) {
-							if (!correctLetters.includes(clickedLetter)) {
-								correctLetters.push(clickedLetter);
-
-								displayWord();
-							} else {
-								showNotification();
-							}
-						} else {
-							if (!wrongLetters.includes(clickedLetter)) {
-								wrongLetters.push(clickedLetter);
-							} else {
-								showNotification();
-							}
-						}
-					});
-				});
-
-				return clickedLetters;
-			}
-
-			clickedLetter();
-
-			// Restart game and play again
-			playAgainBtn.addEventListener('click', () => {
-				// empty arrays
-				correctLetters.splice(0);
-				wrongLetters.splice(0);
-
-				selectedWord = singleBreed;
-				getSingleDogBreed();
-				displayWord();
-
-				popup.style.display = 'none';
-			});
 		}
 
-		getSingleDogBreed();
-	});
+		displayWord();
+
+		// Show notification
+		function showNotification() {
+			notification.classList.add('show');
+
+			setTimeout(() => {
+				notification.classList.remove('show');
+			}, 1500);
+		}
+
+		// check for letter that was clicked on
+		function clickedLetter() {
+			let letters = document.querySelectorAll('.alphabet-button');
+			console.log(selectedWord);
+
+			let clickedLetters = letters.forEach((letter) => {
+				letter.addEventListener('click', (e) => {
+					let clickedLetter = e.currentTarget.innerText;
+					e.target.classList.add('clicked');
+
+					if (selectedWord.includes(clickedLetter)) {
+						if (!correctLetters.includes(clickedLetter)) {
+							correctLetters.push(clickedLetter);
+							displayWord();
+						} else {
+							showNotification();
+						}
+					} else {
+						if (!wrongLetters.includes(clickedLetter)) {
+							wrongLetters.push(clickedLetter);
+						} else {
+							showNotification();
+						}
+					}
+				});
+			});
+
+			return clickedLetters;
+		}
+
+		clickedLetter();
+
+		function displayGame() {
+			gameContainer.style.maxHeight =
+				parseInt(maxHeight.replace(/px/, '')) + 3000 + 'px';
+		}
+
+		displayGame();
+	}
 
 	// create alphabet ul
 	function createAlphabet() {
@@ -181,16 +175,16 @@ window.addEventListener('DOMContentLoaded', function () {
 		letters = document.createElement('ul');
 		letters.classList.add('alphabet-list');
 		letters.innerHTML = `
-		${alphabet
-			.map(
-				(letter) => `
-				  <li class="alphabet-button">
-				  ${letter}
-			  </li>
-			  `
-			)
-			.join('')}
-		`;
+	${alphabet
+		.map(
+			(letter) => `
+			  <li class="alphabet-button">
+			  ${letter}
+		  </li>
+		  `
+		)
+		.join('')}
+	`;
 
 		myButtons.appendChild(letters);
 	}
