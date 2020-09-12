@@ -2,6 +2,7 @@ window.addEventListener('DOMContentLoaded', function () {
 	const playBtn = document.getElementById('play-btn');
 	const playAgainBtn = document.getElementById('play-button');
 	const gameContainer = document.getElementById('game-container');
+	const lettersContainer = document.getElementById('letters');
 	const dogImgContainer = document.querySelector('.game-container__img');
 	const finalMsg = document.getElementById('final-message');
 	const popup = document.getElementById('popup-container');
@@ -37,22 +38,52 @@ window.addEventListener('DOMContentLoaded', function () {
 		'z',
 	];
 
+	// create alphabet ul
+	function createAlphabet() {
+		myButtons = document.getElementById('buttons');
+		letters = document.createElement('ul');
+		letters.setAttribute('id', 'alphabet-list');
+
+		letters.classList.add('alphabet-list');
+		letters.innerHTML = `
+${alphabet
+	.map(
+		(letter) => `
+	  <li class="alphabet-button">
+	  ${letter}
+  </li>
+  `
+	)
+	.join('')}
+	`;
+
+		myButtons.appendChild(letters);
+	}
+
+	// reset aplhabet
+	function resetAlphabet() {
+		let letters = document.getElementById('alphabet-list');
+		if (letters != null) {
+			letters.remove();
+		}
+	}
+
 	playBtn.addEventListener('click', (e) => {
 		getSingleDogBreed();
+		resetAlphabet();
+		createAlphabet();
 	});
 
 	// Restart game and play again
 	playAgainBtn.addEventListener('click', () => {
 		getSingleDogBreed();
+		resetAlphabet();
+		createAlphabet();
 
 		popup.style.display = 'none';
-		let letters = document.querySelectorAll('.alphabet-button');
-		letters.forEach((letter) => {
-			letter.classList.remove('clicked');
-		});
 	});
 
-	async function getSingleDogBreed() {
+	async function getSingleDogBreed(x) {
 		playBtn.innerText = 'Change word (display new Dog breed)';
 
 		const breedListResponse = await fetch(
@@ -91,10 +122,20 @@ window.addEventListener('DOMContentLoaded', function () {
 		});
 
 		////// hangman part
+
 		let selectedWord = singleBreed;
 		const wordEl = document.getElementById('word');
 		const correctLetters = [];
 		const wrongLetters = [];
+
+		function resetLetters() {
+			let letters = document.querySelectorAll('.alphabet-button');
+			letters.forEach((letter) => {
+				letter.classList.remove('clicked');
+			});
+		}
+
+		resetLetters();
 
 		// Show hidden word
 		function displayWord() {
@@ -126,7 +167,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 			setTimeout(() => {
 				notification.classList.remove('show');
-			}, 1500);
+			}, 3500);
 		}
 
 		// check for letter that was clicked on
@@ -136,20 +177,24 @@ window.addEventListener('DOMContentLoaded', function () {
 
 			let clickedLetters = letters.forEach((letter) => {
 				letter.addEventListener('click', (e) => {
-					let clickedLetter = e.currentTarget.innerText;
+					let clickedLetter = e.target.innerText;
 					e.target.classList.add('clicked');
+					const innerWord = wordEl.innerText.replace(/\n/g, '');
 
 					if (selectedWord.includes(clickedLetter)) {
 						if (!correctLetters.includes(clickedLetter)) {
 							correctLetters.push(clickedLetter);
+
 							displayWord();
-						} else {
+						} else if (innerWord != selectedWord) {
+							notification.innerText = `word already contains ${clickedLetter.toUpperCase()}`;
 							showNotification();
 						}
 					} else {
 						if (!wrongLetters.includes(clickedLetter)) {
 							wrongLetters.push(clickedLetter);
 						} else {
+							notification.innerText = `word does not contain ${clickedLetter.toUpperCase()} plus you already clicked it DUMBASS`;
 							showNotification();
 						}
 					}
@@ -168,26 +213,4 @@ window.addEventListener('DOMContentLoaded', function () {
 
 		displayGame();
 	}
-
-	// create alphabet ul
-	function createAlphabet() {
-		myButtons = document.getElementById('buttons');
-		letters = document.createElement('ul');
-		letters.classList.add('alphabet-list');
-		letters.innerHTML = `
-	${alphabet
-		.map(
-			(letter) => `
-			  <li class="alphabet-button">
-			  ${letter}
-		  </li>
-		  `
-		)
-		.join('')}
-	`;
-
-		myButtons.appendChild(letters);
-	}
-
-	createAlphabet();
 });

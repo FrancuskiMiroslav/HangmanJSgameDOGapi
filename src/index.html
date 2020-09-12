@@ -10,9 +10,7 @@
 			type="image/gif"
 			sizes="16x16"
 		/>
-		<!--build:css css/styles.min.css-->
-		<link rel="stylesheet" href="app.css" />
-		<!--endbuild-->
+		<link rel="stylesheet" href="app.css" id="css" />
 		<title>Doggos</title>
 	</head>
 
@@ -58,7 +56,7 @@
 							</div>
 						</div>
 
-						<div class="letters-container">
+						<div class="letters-container" id="letters">
 							<div id="buttons" class="alphabet-container"></div>
 
 							<ul class="word" id="word">
@@ -90,9 +88,18 @@
 				</div>
 			</section>
 		</main>
-		<!--build:js js/main.min.js -->
 
+		<script>
+			window.addEventListener('DOMContentLoaded', function () {
+				/// css unique timestamp
+				let uniqueNum = new Date().getTime();
+				let cssURL = `app.css?ver=${uniqueNum}`;
+				let cssElement = document.getElementById('css');
+				cssElement.setAttribute('rel', 'stylesheet');
+				cssElement.setAttribute('type', 'text/css');
+				cssElement.setAttribute('href', cssURL);
+			});
+		</script>
 		<script type="text/javascript" src="app.js"></script>
-		<!-- endbuild -->
 	</body>
 </html>

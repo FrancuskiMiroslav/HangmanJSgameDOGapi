@@ -10,6 +10,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const del = require('del');
 const mode = require('gulp-mode')();
 const browserSync = require('browser-sync').create();
+const cachebust = require('gulp-cache-bust');
 
 let settings = {
 	clean: true,
