@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', function () {
 	const finalMsg = document.getElementById('final-message');
 	const popup = document.getElementById('popup-container');
 	const notification = document.getElementById('notification-container');
-	const figureParts = document.querySelectorAll('.figure-part');
+	const figureParts = Array.from(document.querySelectorAll('.figure-part'));
 
 	let alphabet = [
 		'a',
@@ -83,7 +83,7 @@ ${alphabet
 		popup.style.display = 'none';
 	});
 
-	async function getSingleDogBreed(x) {
+	async function getSingleDogBreed() {
 		playBtn.innerText = 'Change word (display new Dog breed)';
 
 		const breedListResponse = await fetch(
@@ -170,6 +170,34 @@ ${alphabet
 			}, 3500);
 		}
 
+		function drawFigure() {
+			// draw each part when wrong
+			figureParts.forEach((part, index) => {
+				const error = wrongLetters.length;
+
+				if (index < error) {
+					part.style.display = 'block';
+				} else {
+					part.style.display = 'none';
+				}
+			});
+
+			// display notification when game over
+			if (wrongLetters.length === figureParts.length) {
+				finalMsg.innerText = 'YOU LOST! better luck next time';
+				popup.style.display = 'flex';
+			}
+		}
+
+		// hide figure parts after game over
+		function resetFigure() {
+			figureParts.forEach((part) => {
+				part.style.display = 'none';
+			});
+		}
+
+		resetFigure();
+
 		// check for letter that was clicked on
 		function clickedLetter() {
 			let letters = document.querySelectorAll('.alphabet-button');
@@ -187,14 +215,16 @@ ${alphabet
 
 							displayWord();
 						} else if (innerWord != selectedWord) {
-							notification.innerText = `word already contains ${clickedLetter.toUpperCase()}`;
+							notification.innerText = `word already contains letter ${clickedLetter.toUpperCase()}`;
 							showNotification();
 						}
 					} else {
 						if (!wrongLetters.includes(clickedLetter)) {
 							wrongLetters.push(clickedLetter);
+
+							drawFigure();
 						} else {
-							notification.innerText = `word does not contain ${clickedLetter.toUpperCase()} plus you already clicked it DUMBASS`;
+							notification.innerText = `word does not contain letter ${clickedLetter.toUpperCase()} plus you already clicked it DUMBASS`;
 							showNotification();
 						}
 					}
