@@ -89,6 +89,7 @@ ${alphabet
 		const breedListResponse = await fetch(
 			'https://dog.ceo/api/breeds/list/all'
 		);
+
 		const breedListData = await breedListResponse.json();
 		let breedsArray = Object.keys(breedListData.message);
 

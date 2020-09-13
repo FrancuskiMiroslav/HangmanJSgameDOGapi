@@ -30,6 +30,11 @@
 		display: flex;
 		flex-direction: column;
 
+		@include breakpoint-max(600) {
+			width: 100vw;
+			padding: 5px;
+		}
+
 		.game-container {
 			position: relative;
 			margin: auto;
@@ -52,11 +57,26 @@
 				width: 50%;
 				@include breakpoint-max(600) {
 					width: 100%;
+					height: 270px;
 				}
 
-				.dog__img {
+				.dog__image {
 					max-width: 100%;
-					height: auto;
+					margin-bottom: 20px;
+					transition: 1s all ease-in-out;
+					cursor: zoom-in;
+					object-fit: contain;
+					height: 360px;
+
+					&:hover {
+						transform: scale(1.1);
+						box-shadow: 3px 2px 30px 1px rgba(0, 0, 0, 0.75);
+					}
+
+					@include breakpoint-max(600) {
+						height: 230px;
+						margin-bottom: 0;
+					}
 				}
 			}
 
@@ -69,6 +89,7 @@
 
 				@include breakpoint-max(600) {
 					width: 100%;
+					height: 265px;
 				}
 			}
 		}
@@ -80,6 +101,9 @@
 		.letters-container {
 			margin: 20px;
 			position: relative;
+			@include breakpoint-max(600) {
+				margin: 5px 0;
+			}
 
 			.alphabet-list {
 				display: flex;
@@ -95,6 +119,11 @@
 				margin: 5px;
 				transition: 0.2s all ease-in-out;
 				border: 1px solid rgba($color: $secondary_clr, $alpha: 1);
+				@include breakpoint-max(600) {
+					padding: 6px;
+					margin: 3px;
+					font-size: 14px;
+				}
 
 				&:hover {
 					background-color: rgba($color: $secondary_clr, $alpha: 0.5);
@@ -126,6 +155,10 @@
 			height: 50px;
 			width: 20px;
 			background-color: rgba($color: $secondary_clr, $alpha: 0.2);
+
+			@include breakpoint-max(600) {
+				font-size: 16px;
+			}
 		}
 	}
 
@@ -247,23 +280,12 @@
 		font-size: 1.5rem;
 	}
 
-	&__image {
-		max-width: 100%;
-		margin-bottom: 20px;
-		transition: 1s all ease-in-out;
-		cursor: zoom-in;
-		height: 320px;
-		object-fit: contain;
-
-		&:hover {
-			transform: scale(1.1);
-			box-shadow: 3px 2px 30px 1px rgba(0, 0, 0, 0.75);
-		}
-	}
-
 	&__btn {
 		@include btn;
 		transition: all ease-in-out 0.2s;
+		@include breakpoint-max(600) {
+			font-size: 16px;
+		}
 
 		&:active {
 			transform: scale(0.9);
