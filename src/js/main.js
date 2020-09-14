@@ -84,7 +84,7 @@ ${alphabet
 	});
 
 	async function getSingleDogBreed() {
-		playBtn.innerText = 'Give up and play again (display new Dog breed)';
+		playBtn.innerText = 'Click for new game';
 
 		const breedListResponse = await fetch(
 			'https://dog.ceo/api/breeds/list/all'
@@ -108,7 +108,7 @@ ${alphabet
 									alt=""
 									id="dog-img"
 								/>
-								<button class="dog__btn" id="next-btn">Next hint</button>
+								<button class="dog__btn btn" id="next-btn">Click for next hint</button>
 							`;
 
 		const dogImg = document.getElementById('dog-img');

@@ -11,6 +11,14 @@ $secondary_font: 'Gilroy', cursive;
 	src: url('../fonts/Gilroy-ExtraBold.otf');
 }
 
+$height: 25;
+$depth: 4;
+$color: #7fbb98;
+$text-color: darken($color, 10%);
+$lighten-on-hover: 7%;
+$button-speed: 0.06;
+$timing-function: ease-out;
+
 $primary_clr: rgb(64, 63, 111);
 $secondary_clr: rgb(69, 181, 170);
 $tertiary_clr: #efefef;
