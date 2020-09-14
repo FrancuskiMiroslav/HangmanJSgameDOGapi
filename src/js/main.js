@@ -84,7 +84,7 @@ ${alphabet
 	});
 
 	async function getSingleDogBreed() {
-		playBtn.innerText = 'Change word (display new Dog breed)';
+		playBtn.innerText = 'Give up and play again (display new Dog breed)';
 
 		const breedListResponse = await fetch(
 			'https://dog.ceo/api/breeds/list/all'
